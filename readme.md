@@ -1,7 +1,3 @@
-Baik, saya jelaskan langkah-langkah cara membuat **klepon** (jajanan tradisional isi gula merah dengan taburan kelapa):
-
----
-
 ### Bahan-bahan:
 
 * 200 gram tepung ketan
