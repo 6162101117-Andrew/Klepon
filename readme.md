@@ -1,43 +1,149 @@
-### Bahan-bahan:
+# Waste Management Monitoring System 🚛♻️
 
-* 200 gram tepung ketan
-* 2 sdm tepung beras (opsional, untuk membuat adonan lebih kenyal)
-* 180–200 ml air pandan (air blender pandan + saring, atau pakai pasta pandan secukupnya dicampur air)
-* 100 gram gula merah, sisir halus (untuk isian)
-* ½ butir kelapa parut (ambil bagian putihnya saja)
-* ½ sdt garam
+**Project 4 - Kapita Selekta Analitika Data**
+
+Sistem backend berbasis Python (FastAPI) untuk memantau volume dan jenis sampah di berbagai lokasi. Sistem ini dirancang untuk memudahkan monitoring, mengidentifikasi lokasi dengan produksi sampah tertinggi, memprediksi volume sampah di masa depan, serta mengoptimalkan rute pengumpulan sampah.
+
+## 📋 Fitur Utama
+
+### 1. Manajemen Data (CRUD)
+
+* **Lokasi (Locations):** Mengelola data titik lokasi pembuangan sampah (Latitude/Longitude).
+* **Kategori Sampah (Categories):** Mengelola jenis sampah (Organik, Plastik, Kertas, dll).
+* **Catatan Pengumpulan (Collections):** Mencatat volume sampah harian berdasarkan lokasi dan kategori.
+
+### 2. Autentikasi & Otorisasi
+
+* **JWT Authentication:** Keamanan akses menggunakan JSON Web Token.
+* **Role-Based Access Control:**
+
+  * **Admin:** Akses penuh (CRUD Data User, Lokasi, Kategori).
+
+### 3. Analisis Data Cerdas (Data Analytics)
+
+API menyediakan endpoint analisis mendalam menggunakan `Pandas` dan `Scikit-Learn`:
+
+* **Rata-rata Volume:** Per lokasi dan per kategori.
+* **Tren Harian (Daily Trend):** Visualisasi pergerakan volume sampah dari waktu ke waktu (dilengkapi *Moving Average*).
+* **Top Locations:** Identifikasi lokasi paling "kotor" atau produktif.
+* **Distribusi Sampah:** Persentase komposisi jenis sampah.
+* **Prediksi Volume (Machine Learning):** Menggunakan **Linear Regression** untuk memprediksi volume sampah 7 hari ke depan.
+* **Optimasi Rute (Route Optimization):** Menggunakan algoritma **TSP (Traveling Salesperson Problem - Nearest Neighbor)** untuk menentukan rute pengumpulan sampah terpendek yang efisien.
+
+### 4. Fitur Tambahan
+
+* **Database Seeding:** Script otomatis untuk mengisi database dengan data dummy awal.
+* **CSV Import:** Kemudahan import data massal dari file CSV.
 
 ---
 
-### Langkah Membuat:
+## 🛠️ Teknologi yang Digunakan
 
-1. **Siapkan kelapa parut**
+* **Language:** Python 3.10+
+* **Framework:** FastAPI
+* **Database:** SQL Database (via SQLAlchemy ORM)
+* **Data Analysis:** Pandas, NumPy
+* **Machine Learning:** Scikit-Learn (Linear Regression)
+* **Authentication:** PyJWT, Passlib (Bcrypt)
+* **Testing:** Pytest
 
-   * Campur kelapa parut dengan sedikit garam, lalu kukus selama ±10 menit agar tidak cepat basi. Sisihkan untuk taburan.
+---
 
-2. **Buat adonan klepon**
+## 🚀 Instalasi dan Cara Menjalankan
 
-   * Campur tepung ketan dan tepung beras dalam wadah.
-   * Tuang air pandan sedikit demi sedikit sambil diuleni hingga adonan kalis, lembut, dan bisa dibentuk.
-   * Jika terlalu lembek, tambahkan sedikit tepung ketan. Jika terlalu keras, tambahkan air sedikit.
+Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer lokal Anda:
 
-3. **Bentuk bola klepon**
+### 1. Clone Repository
 
-   * Ambil sedikit adonan (sekitar seujung jempol), pipihkan di telapak tangan.
-   * Isi dengan gula merah sisir secukupnya, lalu bulatkan kembali hingga rapat (jangan sampai bocor).
+```bash
+git clone https://github.com/username/waste-management-api.git
+cd waste-management-api
+```
 
-4. **Rebus klepon**
+### 2. Buat Virtual Environment
 
-   * Didihkan air dalam panci.
-   * Masukkan bola klepon satu per satu.
-   * Rebus sampai klepon mengapung (tanda sudah matang). Angkat dengan saringan.
+Disarankan menggunakan virtual environment agar *dependency* tidak bentrok.
 
-5. **Balur kelapa**
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
 
-   * Gulingkan klepon yang sudah matang ke dalam kelapa parut kukus sampai rata.
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
 
-6. **Sajikan**
+### 3. Install Dependencies
 
-   * Klepon siap disajikan hangat atau suhu ruang. Saat digigit, gula merah di dalamnya akan lumer.
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Setup Database & Seeding Data
+
+Jalankan perintah berikut untuk membuat tabel dan mengisi data awal (User Admin & Data Dummy):
+
+```bash
+python seed.py
+```
+
+**Default User:**
+
+* **Admin:** `admin` / `admin`
+
+### 5. Jalankan Server
+
+```bash
+uvicorn main:app --reload
+```
+
+Server akan berjalan di: `http://127.0.0.1:8000`
+
+---
+
+## 📚 Dokumentasi API
+
+FastAPI menyediakan dokumentasi interaktif secara otomatis. Setelah server berjalan, buka browser dan akses:
+
+* **Swagger UI (Interaktif):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+### Endpoint Utama
+
+| Method | Endpoint                   | Deskripsi                              | Role          |
+| ------ | -------------------------- | -------------------------------------- | ------------- |
+| `POST` | `/auth/token`              | Login untuk mendapatkan Access Token   | All           |
+| `GET`  | `/analysis/summary`        | Ringkasan dashboard (KPI)              | Admin         |
+| `GET`  | `/analysis/trend/daily`    | Tren volume sampah harian              | Admin         |
+| `GET`  | `/analysis/prediction`     | Prediksi volume 7 hari ke depan        | Admin         |
+| `GET`  | `/analysis/route/optimize` | Rekomendasi rute pengumpulan terpendek | Admin         |
+| `GET`  | `/collections/`            | Melihat riwayat pengumpulan sampah     | Admin         |
+
+---
+
+## 🧪 Menjalankan Testing
+
+Proyek ini dilengkapi dengan *Unit Testing* untuk memastikan fitur berjalan lancar.
+
+```bash
+pytest
+```
+
+---
+
+## 📂 Struktur Folder
+
+```text
+waste-management-api/
+├── models/             # Definisi Tabel Database & Pydantic Schemas
+├── routers/            # Endpoint API (Auth, Collection, Analysis, dll)
+├── services/           # Logika Bisnis (CRUD, Hitungan Analisis)
+├── tests/              # Unit Tests
+├── main.py             # Entry Point Aplikasi
+├── database.py         # Koneksi Database
+├── seed.py             # Script Seeding Data
+└── requirements.txt    # Daftar Library
+```
 
 ---
